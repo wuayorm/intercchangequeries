@@ -1,3 +1,8 @@
+/* Version : 1.0 
+/* Date : 06-04-2019 
+   Created By : Eduardo Rocha
+   Modified By : Eduardo Rocha */
+
 /* Sessions */
 
 SELECT DISTINCT [DT_F_DAY_SCH], [SCH_YR], [CAMPUS_ID], [DT_L_DAY_SCH], 

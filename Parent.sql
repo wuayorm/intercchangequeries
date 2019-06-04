@@ -1,3 +1,8 @@
+/* Version : 1.0 
+/* Date : 06-04-2019 
+   Created By : Eduardo Rocha
+   Modified By : Eduardo Rocha */
+
 /* Parent & StudentParentAssociation */ 
 
 SELECT DISTINCT [rsccc_SR_STU_DEMO].[SCH_YR], [rsccc_SR_STU_DEMO].[unique_stu_id], [rsccc_SR_STU_DEMO].[STU_ID], [rsccc_SR_PARENT].[NAME_F], [rsccc_SR_PARENT].[NAME_L], 
