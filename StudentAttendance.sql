@@ -1,3 +1,8 @@
+/* Version : 1.0 
+/* Date : 06-04-2019 
+   Created By : Eduardo Rocha
+   Modified By : Eduardo Rocha */
+
 /* StudentSectionAttendanceEvent */
 /* Student Attendance U */
 

@@ -1,3 +1,8 @@
+/* Version : 1.0 
+/* Date : 06-04-2019 
+   Created By : Eduardo Rocha
+   Modified By : Eduardo Rocha */
+
 /* Education Service Center & LocalEducationAgency */
 
 SELECT DISTINCT [SCH_YR], [DIST_ID], [DIST_NAME], [REGION_NBR], [STR_NBR_DIST], [STR_NAME_DIST], [CITY_NAME_DIST], [STATE_CD], [ZIP_DIST], 

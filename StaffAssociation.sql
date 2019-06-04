@@ -1,3 +1,8 @@
+/* Version : 1.0 
+/* Date : 06-04-2019 
+   Created By : Eduardo Rocha
+   Modified By : Eduardo Rocha */
+
 /* Staff */
 
 SELECT DISTINCT [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_M], [rsccc_BHR_EMP_DEMO].[NAME_L] 

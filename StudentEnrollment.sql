@@ -1,3 +1,8 @@
+/* Version : 1.0 
+/* Date : 06-04-2019 
+   Created By : Eduardo Rocha
+   Modified By : Eduardo Rocha */
+
 /* StudentSchoolAssociation */
 
 SELECT DISTINCT [rsccc_SR_STU_ENROLL].[STU_ID], [rsccc_SR_STU_DEMO].[GRAD_PLAN_CD], [rsccc_SR_STU_DEMO].[unique_stu_id], [rsccc_CR_DEMO].[DIST_ID], 
