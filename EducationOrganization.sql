@@ -1,0 +1,76 @@
+/* Version : 1.0 
+/* Date : 06-04-2019 
+   Created By : Eduardo Rocha
+   Modified By : Eduardo Rocha */
+
+/* Education Service Center & LocalEducationAgency */
+
+SELECT DISTINCT [SCH_YR], [DIST_ID], [DIST_NAME], [REGION_NBR], [STR_NBR_DIST], [STR_NAME_DIST], [CITY_NAME_DIST], [STATE_CD], [ZIP_DIST], 
+[AREA_CD_DIST], [PHONE_NBR_DIST], [FAX_PHONE], [FAX_AREA_CD], [CAMPUS_WD_RSN], [DIST_CNTY_NAME], [DIST_REGION_ID], [DIST_WEB_SITE] 
+FROM [rsccc_DR_DEMO];
+
+
+/* School & GradeLevel*/
+
+SELECT DISTINCT [rsccc_DR_DEMO].[SCH_YR], [rsccc_DR_DEMO].[DIST_ID], [rsccc_DR_DEMO].[DIST_CNTY_NAME], [rsccc_CR_DEMO].[CAMPUS_ID], [rsccc_CR_DEMO].[CAMPUS_NAME], 
+[rsccc_CR_DEMO].[STR_NBR], [rsccc_CR_DEMO].[STR_NAME], [rsccc_CR_DEMO].[CITY_NAME], [rsccc_CR_DEMO].[TB_CAMPUS_STATE], [rsccc_CR_DEMO].[ZIP] 
+FROM [rsccc_DR_DEMO] LEFT JOIN [rsccc_CR_DEMO] ON [rsccc_DR_DEMO].[DIST_ID] = [rsccc_CR_DEMO].[DIST_ID] 
+WHERE [rsccc_CR_DEMO].[CAMPUS_ID] = '001' ;
+
+SELECT DISTINCT [rsccc_ET_C050_GRDLVL].[SCH_YR], [rsccc_ET_C050_GRDLVL].[GRDLVL_CD], [rsccc_ET_C050_GRDLVL].[GRDLVL_DESCR] FROM [rsccc_ET_C050_GRDLVL];
+
+
+/* Location */ 
+
+SELECT DISTINCT [rsccc_CR_INSTR_CYR].[HOMEROOM], [rsccc_CR_INSTR_CYR].[SCH_YR], [rsccc_CR_INSTR_CYR].[CAMPUS_ID], 
+CASE WHEN [rsccc_CR_CRS_OFFERED_CYR].[MAX_SEATS] = '0' THEN '25' 
+     WHEN [rsccc_CR_CRS_OFFERED_CYR].[MAX_SEATS] = '000' THEN '25'
+     WHEN [rsccc_CR_CRS_OFFERED_CYR].[MAX_SEATS] = '025' THEN '25'
+     WHEN [rsccc_CR_CRS_OFFERED_CYR].[MAX_SEATS] <> '0' THEN [rsccc_CR_CRS_OFFERED_CYR].[MAX_SEATS]
+END AS MaxSeats, [rsccc_CR_DEMO].[DIST_ID] 
+FROM [rsccc_CR_INSTR_CYR]
+LEFT JOIN [rsccc_CR_MET_CYR] ON [rsccc_CR_INSTR_CYR].[INSTR_ID] = [rsccc_CR_MET_CYR].[INSTR_ID] 
+RIGHT JOIN [rsccc_CR_CRS_OFFERED_CYR] ON [rsccc_CR_MET_CYR].[CRS_NBR] = [rsccc_CR_CRS_OFFERED_CYR].[CRS_NBR] 
+LEFT JOIN [rsccc_CR_DEMO] ON [rsccc_CR_CRS_OFFERED_CYR].[CAMPUS_ID] = [rsccc_CR_DEMO].[CAMPUS_ID]
+WHERE [rsccc_CR_INSTR_CYR].[INSTR_ID] IS NOT NULL AND [rsccc_CR_INSTR_CYR].[HOMEROOM] <> '' 
+ORDER BY [rsccc_CR_INSTR_CYR].[HOMEROOM] ;
+
+
+/* ClassPeriod */
+
+SELECT DISTINCT [SCH_YR], [CAMPUS_ID], [PER_BEGIN], 
+CASE WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '01' THEN '08:00:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '02' THEN '08:50:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '03' THEN '09:40:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '04' THEN '10:30:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '05' THEN '11:20:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '06' THEN '12:40:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '07' THEN '13:30:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '08' THEN '14:20:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '09' THEN '14:54:00'
+END AS StartTime, 
+CASE WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '01' THEN '08:46:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '02' THEN '09:36:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '03' THEN '10:26:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '04' THEN '11:16:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '05' THEN '12:06:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '06' THEN '13:26:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '07' THEN '14:16:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '08' THEN '14:50:00' 
+     WHEN [rsccc_CR_MET_CYR].[PER_BEGIN] = '09' THEN '15:40:00'
+END AS EndTime 
+FROM [rsccc_CR_MET_CYR] ORDER BY [rsccc_CR_MET_CYR].[PER_BEGIN] ;
+
+
+/* Course */
+
+SELECT DISTINCT [rsccc_DR_CRS_OFFERED_CYR].[SCH_YR], [rsccc_CR_DEMO].[DIST_ID], [rsccc_CR_MET_CYR].[CAMPUS_ID], [rsccc_DR_CRS_OFFERED_CYR].[CRS_NBR], 
+[rsccc_DR_CRS_OFFERED_CYR].[SVC_ID], [rsccc_DR_CRS_OFFERED_CYR].[TITLE]  
+FROM [rsccc_DR_CRS_OFFERED_CYR] LEFT JOIN [rsccc_CR_MET_CYR] ON [rsccc_DR_CRS_OFFERED_CYR].[CRS_NBR] = [rsccc_CR_MET_CYR].[CRS_NBR] 
+LEFT JOIN [rsccc_CR_INSTR_CYR] ON [rsccc_CR_MET_CYR].[INSTR_ID] = [rsccc_CR_INSTR_CYR].[INSTR_ID] 
+LEFT JOIN [rsccc_CR_DEMO] ON [rsccc_CR_INSTR_CYR].[CAMPUS_ID] = [rsccc_CR_DEMO].[CAMPUS_ID] 
+WHERE [rsccc_CR_MET_CYR].[CAMPUS_ID] IS NOT NULL  
+AND  [rsccc_DR_CRS_OFFERED_CYR].[CRS_NBR] <> '0001'  AND [rsccc_CR_MET_CYR].[CRS_NBR] <> '0301' AND [rsccc_CR_MET_CYR].[CRS_NBR] <> '0402' AND [rsccc_CR_MET_CYR].[CRS_NBR] <> '0501' 
+ORDER BY [rsccc_DR_CRS_OFFERED_CYR].[CRS_NBR] ; 
+
+
