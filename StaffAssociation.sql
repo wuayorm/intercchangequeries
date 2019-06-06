@@ -1,11 +1,17 @@
 /* Version : 1.0 
-/* Date : 06-04-2019 
+/* Date : 06-06-2019 
    Created By : Eduardo Rocha
-   Modified By : Eduardo Rocha */
+   Modified By : Eduardo Rocha 
+   Description: Add the email column and the Superintendent Query for the Elements Staff, StaffEducationOrganizationEmploymentAssociation 
+                and StaffEducationOrganizationAssigmentAssociation */
 
-/* Staff */
 
-SELECT DISTINCT [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_M], [rsccc_BHR_EMP_DEMO].[NAME_L] 
+/* Staff - Principals and Counselors*/
+
+SELECT DISTINCT [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_M], [rsccc_BHR_EMP_DEMO].[NAME_L], 
+CASE WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] = '' THEN LOWER((LEFT([rsccc_BHR_EMP_DEMO].[NAME_F], 1) + [rsccc_BHR_EMP_DEMO].[NAME_L] + '@granger.txed.net')) 
+     WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] <> '' THEN LOWER([rsccc_BHR_EMP_DEMO].[EMAIL]) 
+END AS Email_Address 
 FROM [rsccc_BHR_EMP_DEMO] LEFT JOIN [rsccc_CR_PRINCIPAL_COUNSELORS] ON [rsccc_BHR_EMP_DEMO].[EMP_NBR] = [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID] 
 WHERE [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%999%' and [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%888%' AND [rsccc_BHR_EMP_DEMO].[EMP_NBR] <> '000407' 
 AND ([rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID] IS NOT NULL) 
@@ -13,17 +19,28 @@ AND [rsccc_CR_PRINCIPAL_COUNSELORS].[CAMPUS_ID] = '001'
 ORDER BY [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID];
 
 
-/* Staff 2 */
+/* Staff 2 - Teachers and Staff */
 
-SELECT DISTINCT [rsccc_CR_INSTR_CYR].[STAFF_ID], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_M], [rsccc_BHR_EMP_DEMO].[NAME_L] 
+SELECT DISTINCT [rsccc_CR_INSTR_CYR].[STAFF_ID], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_M], [rsccc_BHR_EMP_DEMO].[NAME_L], 
+CASE WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] = '' THEN LOWER((LEFT([rsccc_BHR_EMP_DEMO].[NAME_F], 1) + [rsccc_BHR_EMP_DEMO].[NAME_L] + '@granger.txed.net')) 
+     WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] <> '' THEN LOWER([rsccc_BHR_EMP_DEMO].[EMAIL]) 
+END AS Email_Address 
 FROM [rsccc_BHR_EMP_DEMO] LEFT JOIN [rsccc_CR_INSTR_CYR] ON [rsccc_BHR_EMP_DEMO].[EMP_NBR] = [rsccc_CR_INSTR_CYR].[STAFF_ID]
 WHERE [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%999%' and [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%888%' AND [rsccc_BHR_EMP_DEMO].[EMP_NBR] <> '000017' 
 AND [rsccc_CR_INSTR_CYR].[STAFF_ID] IS NOT NULL
-ORDER BY [rsccc_CR_INSTR_CYR].[STAFF_ID]; 
+ORDER BY [rsccc_CR_INSTR_CYR].[STAFF_ID];
+
+/* Superintendent */
+
+SELECT DISTINCT [rsccc_DR_DEMO].[SCH_YR], [rsccc_DR_DEMO].[DIST_ID], [rsccc_DR_DEMO].[DIST_NAME], [rsccc_DR_DEMO].[STR_NBR_DIST], [rsccc_DR_DEMO].[STR_NAME_DIST], [rsccc_DR_DEMO].[CITY_NAME_DIST], 
+[rsccc_DR_DEMO].[STATE_CD], [rsccc_DR_DEMO].[ZIP_DIST], [rsccc_DR_DEMO].[AREA_CD_DIST], [rsccc_DR_DEMO].[PHONE_NBR_DIST], [rsccc_DR_DEMO].[SUPERDT_NAME_L], [rsccc_DR_DEMO].[SUPERDT_NAME_F], 
+[rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED], [rsccc_BHR_EMP_DEMO].[EMP_NBR], [rsccc_BHR_EMP_DEMO].[EMAIL], [rsccc_BHR_RESPONSIBILITY].[ROLE_ID], [rsccc_ET_C021_ROLEID].[ROLE_DESCR] 
+FROM [rsccc_DR_DEMO], [rsccc_BHR_EMP_DEMO], [rsccc_BHR_RESPONSIBILITY] 
+LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rsccc_ET_C021_ROLEID].[ROLE_CD] 
+WHERE ([rsccc_BHR_EMP_DEMO].[NAME_L] = [rsccc_DR_DEMO].[SUPERDT_NAME_L] AND [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] = [rsccc_BHR_EMP_DEMO].[EMP_NBR]);
 
 
 /* StaffEducationOrganizationEmploymentAssociation */
-
 /* Principals and Counselors */
 SELECT DISTINCT [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID],  [rsccc_CR_DEMO].[DIST_ID], [rsccc_CR_PRINCIPAL_COUNSELORS].[CAMPUS_ID], [rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED]
 FROM [rsccc_BHR_EMP_DEMO] LEFT JOIN [rsccc_CR_PRINCIPAL_COUNSELORS] ON [rsccc_BHR_EMP_DEMO].[EMP_NBR] = [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID] 
@@ -41,6 +58,16 @@ RIGHT JOIN [rsccc_CR_DEMO] ON [rsccc_CR_DEMO].[CAMPUS_ID] = [rsccc_CR_INSTR_CYR]
 WHERE [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%999%' and [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%888%' AND [rsccc_BHR_EMP_DEMO].[EMP_NBR] <> '000017'
 AND [rsccc_CR_INSTR_CYR].[STAFF_ID] IS NOT NULL
 ORDER BY [rsccc_CR_INSTR_CYR].[STAFF_ID]; 
+
+/* StaffEducationOrganizationEmploymentAssociation */
+/* Superintendent */
+
+SELECT DISTINCT [rsccc_DR_DEMO].[SCH_YR], [rsccc_DR_DEMO].[DIST_ID], [rsccc_DR_DEMO].[DIST_NAME], [rsccc_DR_DEMO].[STR_NBR_DIST], [rsccc_DR_DEMO].[STR_NAME_DIST], [rsccc_DR_DEMO].[CITY_NAME_DIST], 
+[rsccc_DR_DEMO].[STATE_CD], [rsccc_DR_DEMO].[ZIP_DIST], [rsccc_DR_DEMO].[AREA_CD_DIST], [rsccc_DR_DEMO].[PHONE_NBR_DIST], [rsccc_DR_DEMO].[SUPERDT_NAME_L], [rsccc_DR_DEMO].[SUPERDT_NAME_F], 
+[rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED], [rsccc_BHR_EMP_DEMO].[EMP_NBR], [rsccc_BHR_EMP_DEMO].[EMAIL], [rsccc_BHR_RESPONSIBILITY].[ROLE_ID], [rsccc_ET_C021_ROLEID].[ROLE_DESCR] 
+FROM [rsccc_DR_DEMO], [rsccc_BHR_EMP_DEMO], [rsccc_BHR_RESPONSIBILITY] 
+LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rsccc_ET_C021_ROLEID].[ROLE_CD] 
+WHERE ([rsccc_BHR_EMP_DEMO].[NAME_L] = [rsccc_DR_DEMO].[SUPERDT_NAME_L] AND [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] = [rsccc_BHR_EMP_DEMO].[EMP_NBR]);
 
 
 /* StaffEducationOrganizationAssigmentAssociation */
@@ -62,6 +89,16 @@ RIGHT JOIN [rsccc_CR_DEMO] ON [rsccc_CR_DEMO].[CAMPUS_ID] = [rsccc_CR_INSTR_CYR]
 WHERE [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%999%' and [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%888%' AND [rsccc_BHR_EMP_DEMO].[EMP_NBR] <> '000017' 
 AND [rsccc_CR_INSTR_CYR].[STAFF_ID] IS NOT NULL
 ORDER BY [rsccc_CR_INSTR_CYR].[STAFF_ID]; 
+
+/* StaffEducationOrganizationAssigmentAssociation */
+/* Superintendent */
+
+SELECT DISTINCT [rsccc_DR_DEMO].[SCH_YR], [rsccc_DR_DEMO].[DIST_ID], [rsccc_DR_DEMO].[DIST_NAME], [rsccc_DR_DEMO].[STR_NBR_DIST], [rsccc_DR_DEMO].[STR_NAME_DIST], [rsccc_DR_DEMO].[CITY_NAME_DIST], 
+[rsccc_DR_DEMO].[STATE_CD], [rsccc_DR_DEMO].[ZIP_DIST], [rsccc_DR_DEMO].[AREA_CD_DIST], [rsccc_DR_DEMO].[PHONE_NBR_DIST], [rsccc_DR_DEMO].[SUPERDT_NAME_L], [rsccc_DR_DEMO].[SUPERDT_NAME_F], 
+[rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED], [rsccc_BHR_EMP_DEMO].[EMP_NBR], [rsccc_BHR_EMP_DEMO].[EMAIL], [rsccc_BHR_RESPONSIBILITY].[ROLE_ID], [rsccc_ET_C021_ROLEID].[ROLE_DESCR] 
+FROM [rsccc_DR_DEMO], [rsccc_BHR_EMP_DEMO], [rsccc_BHR_RESPONSIBILITY] 
+LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rsccc_ET_C021_ROLEID].[ROLE_CD] 
+WHERE ([rsccc_BHR_EMP_DEMO].[NAME_L] = [rsccc_DR_DEMO].[SUPERDT_NAME_L] AND [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] = [rsccc_BHR_EMP_DEMO].[EMP_NBR]);
 
 
 /* StaffSchoolAssociation */
