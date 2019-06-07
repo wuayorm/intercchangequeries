@@ -1,12 +1,12 @@
 /* Version : 1.0 
-/* Date : 06-06-2019 
+/* Date : 06-07-2019 
    Created By : Eduardo Rocha
    Modified By : Eduardo Rocha 
-   Description: Add the email column and the Superintendent Query for the Elements Staff, StaffEducationOrganizationEmploymentAssociation 
+   Description: Add District Staff not teaches nor counselors Query for the Elements Staff, StaffEducationOrganizationEmploymentAssociation 
                 and StaffEducationOrganizationAssigmentAssociation */
 
-
-/* Staff - Principals and Counselors*/
+/* Staff */
+/* Principals and Counselors*/
 
 SELECT DISTINCT [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_M], [rsccc_BHR_EMP_DEMO].[NAME_L], 
 CASE WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] = '' THEN LOWER((LEFT([rsccc_BHR_EMP_DEMO].[NAME_F], 1) + [rsccc_BHR_EMP_DEMO].[NAME_L] + '@granger.txed.net')) 
@@ -19,7 +19,8 @@ AND [rsccc_CR_PRINCIPAL_COUNSELORS].[CAMPUS_ID] = '001'
 ORDER BY [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID];
 
 
-/* Staff 2 - Teachers and Staff */
+/* Staff */
+/* Teachers and Staff */
 
 SELECT DISTINCT [rsccc_CR_INSTR_CYR].[STAFF_ID], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_M], [rsccc_BHR_EMP_DEMO].[NAME_L], 
 CASE WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] = '' THEN LOWER((LEFT([rsccc_BHR_EMP_DEMO].[NAME_F], 1) + [rsccc_BHR_EMP_DEMO].[NAME_L] + '@granger.txed.net')) 
@@ -30,6 +31,8 @@ WHERE [rsccc_BHR_EMP_DEMO].[EMP_NBR] not like '%999%' and [rsccc_BHR_EMP_DEMO].[
 AND [rsccc_CR_INSTR_CYR].[STAFF_ID] IS NOT NULL
 ORDER BY [rsccc_CR_INSTR_CYR].[STAFF_ID];
 
+
+/* Staff */
 /* Superintendent */
 
 SELECT DISTINCT [rsccc_DR_DEMO].[SCH_YR], [rsccc_DR_DEMO].[DIST_ID], [rsccc_DR_DEMO].[DIST_NAME], [rsccc_DR_DEMO].[STR_NBR_DIST], [rsccc_DR_DEMO].[STR_NAME_DIST], [rsccc_DR_DEMO].[CITY_NAME_DIST], 
@@ -38,6 +41,24 @@ SELECT DISTINCT [rsccc_DR_DEMO].[SCH_YR], [rsccc_DR_DEMO].[DIST_ID], [rsccc_DR_D
 FROM [rsccc_DR_DEMO], [rsccc_BHR_EMP_DEMO], [rsccc_BHR_RESPONSIBILITY] 
 LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rsccc_ET_C021_ROLEID].[ROLE_CD] 
 WHERE ([rsccc_BHR_EMP_DEMO].[NAME_L] = [rsccc_DR_DEMO].[SUPERDT_NAME_L] AND [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] = [rsccc_BHR_EMP_DEMO].[EMP_NBR]);
+
+
+/* Staff */
+/* District Staff Not teachers nor counselors */
+
+SELECT DISTINCT [rsccc_DR_DEMO].[DIST_ID], [rsccc_BHR_EMP_DEMO].[EMP_NBR], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_L], [rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED], 
+[rsccc_BHR_RESPONSIBILITY].[ROLE_ID], 
+CASE WHEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] IS NULL THEN 'Other' 
+     WHEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] IS NOT NULL THEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] 
+END AS Role_Desc, 
+CASE WHEN [rsccc_BHR_EMP_DEMO].[EMAIL]  = '' THEN LOWER((LEFT([rsccc_BHR_EMP_DEMO].[NAME_F], 1) + [rsccc_BHR_EMP_DEMO].[NAME_L] + '@granger.txed.net')) 
+     WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] <> '' THEN LOWER([rsccc_BHR_EMP_DEMO].[EMAIL]) 
+END AS Email_Address 
+FROM [rsccc_DR_DEMO], [rsccc_BHR_EMP_DEMO], [rsccc_BHR_RESPONSIBILITY] 
+LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rsccc_ET_C021_ROLEID].[ROLE_CD] 
+WHERE [rsccc_BHR_EMP_DEMO].[EMP_NBR] = [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '027' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '087' 
+AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '020' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '003' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '055' 
+ORDER BY [rsccc_BHR_EMP_DEMO].[EMP_NBR] ; 
 
 
 /* StaffEducationOrganizationEmploymentAssociation */
@@ -70,7 +91,26 @@ LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rscc
 WHERE ([rsccc_BHR_EMP_DEMO].[NAME_L] = [rsccc_DR_DEMO].[SUPERDT_NAME_L] AND [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] = [rsccc_BHR_EMP_DEMO].[EMP_NBR]);
 
 
+/* StaffEducationOrganizationEmploymentAssociation */
+/* District Staff Not teachers nor counselors */
+
+SELECT DISTINCT [rsccc_DR_DEMO].[DIST_ID], [rsccc_BHR_EMP_DEMO].[EMP_NBR], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_L], [rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED], 
+[rsccc_BHR_RESPONSIBILITY].[ROLE_ID], 
+CASE WHEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] IS NULL THEN 'Other' 
+     WHEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] IS NOT NULL THEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] 
+END AS Role_Desc, 
+CASE WHEN [rsccc_BHR_EMP_DEMO].[EMAIL]  = '' THEN LOWER((LEFT([rsccc_BHR_EMP_DEMO].[NAME_F], 1) + [rsccc_BHR_EMP_DEMO].[NAME_L] + '@granger.txed.net')) 
+     WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] <> '' THEN LOWER([rsccc_BHR_EMP_DEMO].[EMAIL]) 
+END AS Email_Address 
+FROM [rsccc_DR_DEMO], [rsccc_BHR_EMP_DEMO], [rsccc_BHR_RESPONSIBILITY] 
+LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rsccc_ET_C021_ROLEID].[ROLE_CD] 
+WHERE [rsccc_BHR_EMP_DEMO].[EMP_NBR] = [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '027' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '087' 
+AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '020' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '003' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '055' 
+ORDER BY [rsccc_BHR_EMP_DEMO].[EMP_NBR] ; 
+
+
 /* StaffEducationOrganizationAssigmentAssociation */
+/* Principals and Counselors */
 
 SELECT DISTINCT [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID],  [rsccc_CR_DEMO].[DIST_ID], [rsccc_CR_PRINCIPAL_COUNSELORS].[CAMPUS_ID], [rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED], [rsccc_ET_C021_ROLEID].[ROLE_DESCR] 
 FROM [rsccc_BHR_EMP_DEMO] LEFT JOIN [rsccc_CR_PRINCIPAL_COUNSELORS] ON [rsccc_BHR_EMP_DEMO].[EMP_NBR] = [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID] 
@@ -82,6 +122,7 @@ ORDER BY [rsccc_CR_PRINCIPAL_COUNSELORS].[STAFF_ID];
 
 
 /* StaffEducationOrganizationAssigmentAssociation - 2 */
+/* Teachers and Staff */
 
 SELECT DISTINCT [rsccc_CR_INSTR_CYR].[STAFF_ID], [rsccc_CR_DEMO].[DIST_ID], [rsccc_CR_INSTR_CYR].[CAMPUS_ID], [rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED], 'Teacher' AS Role_Desc
 FROM [rsccc_BHR_EMP_DEMO] LEFT JOIN [rsccc_CR_INSTR_CYR] ON [rsccc_BHR_EMP_DEMO].[EMP_NBR] = [rsccc_CR_INSTR_CYR].[STAFF_ID] 
@@ -99,6 +140,24 @@ SELECT DISTINCT [rsccc_DR_DEMO].[SCH_YR], [rsccc_DR_DEMO].[DIST_ID], [rsccc_DR_D
 FROM [rsccc_DR_DEMO], [rsccc_BHR_EMP_DEMO], [rsccc_BHR_RESPONSIBILITY] 
 LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rsccc_ET_C021_ROLEID].[ROLE_CD] 
 WHERE ([rsccc_BHR_EMP_DEMO].[NAME_L] = [rsccc_DR_DEMO].[SUPERDT_NAME_L] AND [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] = [rsccc_BHR_EMP_DEMO].[EMP_NBR]);
+
+
+/* StaffEducationOrganizationAssigmentAssociation */
+/* District Staff Not teachers nor counselors */
+
+SELECT DISTINCT [rsccc_DR_DEMO].[DIST_ID], [rsccc_BHR_EMP_DEMO].[EMP_NBR], [rsccc_BHR_EMP_DEMO].[NAME_F], [rsccc_BHR_EMP_DEMO].[NAME_L], [rsccc_BHR_EMP_DEMO].[DT_LAST_CHANGED], 
+[rsccc_BHR_RESPONSIBILITY].[ROLE_ID], 
+CASE WHEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] IS NULL THEN 'Other' 
+     WHEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] IS NOT NULL THEN [rsccc_ET_C021_ROLEID].[ROLE_DESCR] 
+END AS Role_Desc, 
+CASE WHEN [rsccc_BHR_EMP_DEMO].[EMAIL]  = '' THEN LOWER((LEFT([rsccc_BHR_EMP_DEMO].[NAME_F], 1) + [rsccc_BHR_EMP_DEMO].[NAME_L] + '@granger.txed.net')) 
+     WHEN [rsccc_BHR_EMP_DEMO].[EMAIL] <> '' THEN LOWER([rsccc_BHR_EMP_DEMO].[EMAIL]) 
+END AS Email_Address 
+FROM [rsccc_DR_DEMO], [rsccc_BHR_EMP_DEMO], [rsccc_BHR_RESPONSIBILITY] 
+LEFT JOIN [rsccc_ET_C021_ROLEID] ON [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] = [rsccc_ET_C021_ROLEID].[ROLE_CD] 
+WHERE [rsccc_BHR_EMP_DEMO].[EMP_NBR] = [rsccc_BHR_RESPONSIBILITY].[EMP_NBR] AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '027' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '087' 
+AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '020' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '003' AND [rsccc_BHR_RESPONSIBILITY].[ROLE_ID] <> '055' 
+ORDER BY [rsccc_BHR_EMP_DEMO].[EMP_NBR] ; 
 
 
 /* StaffSchoolAssociation */
